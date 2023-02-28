@@ -69,6 +69,10 @@ const player = new Fighter({
       imageSrc: './Assets/samuraiMack/Attack1.png',
       framesMax: 6,
     },
+    attack2: {
+      imageSrc: './Assets/samuraiMack/Attack2.png',
+      framesMax: 6,
+    },
     takeHit: {
       imageSrc: './Assets/samuraiMack/Take Hit - white silhouette.png',
       framesMax: 4,
@@ -129,6 +133,10 @@ const enemy = new Fighter({
     },
     attack1: {
       imageSrc: './Assets/kenji/Attack1.png',
+      framesMax: 4,
+    },
+    attack2: {
+      imageSrc: './Assets/kenji/Attack2.png',
       framesMax: 4,
     },
     takeHit: {
@@ -216,16 +224,17 @@ function animate() {
     enemy.switchSprite('fall')
   }
 
-
   //    detect for collisions && get hits
   if (
     rectangularCollision({
       rectangle1: player,
       rectangle2: enemy
     }) &&
-      player.isAttacking && player.frameCurrent === 4
+      player.isAttacking && player.frameCurrent === 4 &&
+      player.health > 0
   ) {
-    enemy.takeHit()
+    console.log(demage);
+    enemy.takeHit(demage)
     player.isAttacking = false
     gsap.to('#enemyHealth', {
       width: enemy.health + '%'
@@ -242,9 +251,10 @@ function animate() {
       rectangle1: enemy,
       rectangle2: player
     }) &&
-      enemy.isAttacking && enemy.frameCurrent === 2
+      enemy.isAttacking && enemy.frameCurrent === 2 &&
+      enemy.health > 0
   ) {
-    player.takeHit()
+    player.takeHit(demage)
     enemy.isAttacking = false
     gsap.to('#playerHealth', {
     width: player.health + '%'

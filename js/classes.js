@@ -46,6 +46,8 @@ class Sprite {
   }
 }
 
+let demage
+
 class Fighter extends Sprite {
   constructor({
     position,
@@ -89,6 +91,7 @@ class Fighter extends Sprite {
     this.framesHold = 5
     this.sprites = sprites
     this.dead = false
+    this.attack_num = 0
 
     for (const sprite in this.sprites) {
       sprites[sprite].image = new Image()
@@ -118,12 +121,21 @@ class Fighter extends Sprite {
   }
 
   attack() {
-    this.switchSprite('attack1')
+    this.attack_num += 1
+
+    if (this.attack_num === 4) {
+      this.switchSprite('attack2')
+      demage = 30
+      this.attack_num = 0
+    } else {
+      this.switchSprite('attack1')
+      demage = 5
+    }
     this.isAttacking = true
   }
 
-  takeHit () {
-    this.health -= 20
+  takeHit (demage) {
+    this.health -= demage
 
     if (this.health <= 0) {
       this.switchSprite('death')
@@ -135,12 +147,18 @@ class Fighter extends Sprite {
   switchSprite(sprite) {
     //  overriding all ather animations with the special animation
     if (this.image === this.sprites.death.image)  {
-      if (this.frameCurrent === this.sprites.death.framesMax - 1) this.dead = true
+      if (this.frameCurrent === this.sprites.death.framesMax - 1) {
+        this.dead = true }
       return
     }
     if (
       this.image === this.sprites.attack1.image &&
       this.frameCurrent < this.sprites.attack1.framesMax - 1
+    ) return
+
+    if (
+      this.image === this.sprites.attack2.image &&
+      this.frameCurrent < this.sprites.attack2.framesMax - 1
     ) return
 
     if (this.image === this.sprites.takeHit.image &&
@@ -180,6 +198,13 @@ class Fighter extends Sprite {
         if (this.image !== this.sprites.attack1.image) {
           this.image = this.sprites.attack1.image
           this.framesMax = this.sprites.attack1.framesMax
+          this.frameCurrent = 0
+        }
+        break
+      case 'attack2':
+        if (this.image !== this.sprites.attack2.image) {
+          this.image = this.sprites.attack2.image
+          this.framesMax = this.sprites.attack2.framesMax
           this.frameCurrent = 0
         }
         break
