@@ -101,7 +101,7 @@ class Fighter extends Sprite {
 
   update() {
     this.draw()
-    if (!this.dead) {
+    if (!this.dead || !(this.frameCurrent === this.sprites.death.framesMax - 1)) {
       this.animateFrames()
     }
     this.attackBox.position.x = this.position.x + this.attackBox.offset.x
@@ -125,7 +125,7 @@ class Fighter extends Sprite {
 
     if (this.attack_num === 4) {
       this.switchSprite('attack2')
-      demage = 30
+      demage = 20
       this.attack_num = 0
     } else {
       this.switchSprite('attack1')
@@ -134,7 +134,7 @@ class Fighter extends Sprite {
     this.isAttacking = true
   }
 
-  takeHit (demage) {
+  takeHit () {
     this.health -= demage
 
     if (this.health <= 0) {
@@ -147,8 +147,7 @@ class Fighter extends Sprite {
   switchSprite(sprite) {
     //  overriding all ather animations with the special animation
     if (this.image === this.sprites.death.image)  {
-      if (this.frameCurrent === this.sprites.death.framesMax - 1) {
-        this.dead = true }
+      this.dead = true
       return
     }
     if (

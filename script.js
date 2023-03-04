@@ -2,7 +2,7 @@ const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 
 canvas.width = 1024
-canvas.height = 576
+canvas.height = 568
 
 c.fillRect(0, 0, canvas.width, canvas.height)
 
@@ -13,7 +13,7 @@ const background = new Sprite({
     x: 0,
     y: 0
   },
-  imageSrc: './Assets/background.png'
+  imageSrc: './Assets/background.png',
 })
 
 const shop = new Sprite({
@@ -30,7 +30,7 @@ const shop = new Sprite({
 
 const player = new Fighter({
   position: {
-    x: 0,
+    x: 100,
     y: 0
   },
   velocity: {
@@ -95,8 +95,8 @@ const player = new Fighter({
 
 const enemy = new Fighter({
   position: {
-    x: 400,
-    y: 100
+    x: 800,
+    y: 0
   },
   velocity: {
     x: 0,
@@ -190,10 +190,10 @@ function animate() {
   enemy.velocity.x = 0
 
   //    Player movement
-  if (keys.a.pressed && player.lastKey === 'a') {
+  if (keys.a.pressed && player.lastKey === 'a'  && player.position.x !== 0) {
     player.velocity.x = -5
     player.switchSprite('run')
-  } else if (keys.d.pressed && player.lastKey === 'd') {
+  } else if (keys.d.pressed && player.lastKey === 'd' && player.position.x !== 975) {
     player.velocity.x = 5
     player.switchSprite('run')
   } else {
@@ -208,10 +208,10 @@ function animate() {
   }
 
   //    Enemy movement
-  if (keys.ArrowLeft.pressed && lastKey === 'ArrowLeft') {
+  if (keys.ArrowLeft.pressed && lastKey === 'ArrowLeft' && enemy.position.x !== 0) {
     enemy.velocity.x = -5
     enemy.switchSprite('run')
-  } else if (keys.ArrowRight.pressed && lastKey === 'ArrowRight') {
+  } else if (keys.ArrowRight.pressed && lastKey === 'ArrowRight' && enemy.position.x !== 975) {
     enemy.velocity.x = 5
     enemy.switchSprite('run')
   } else {
@@ -233,13 +233,10 @@ function animate() {
       player.isAttacking && player.frameCurrent === 4 &&
       player.health > 0
   ) {
-    console.log(demage);
-    enemy.takeHit(demage)
+    enemy.takeHit()
     player.isAttacking = false
-    gsap.to('#enemyHealth', {
-      width: enemy.health + '%'
-    })
-  }
+    document.querySelector('#enemyHealth').style.width = enemy.health + '%'
+    }
 
   //  if attack miss
   if (player.isAttacking && player.frameCurrent === 4) {
@@ -254,12 +251,9 @@ function animate() {
       enemy.isAttacking && enemy.frameCurrent === 2 &&
       enemy.health > 0
   ) {
-    player.takeHit(demage)
+    player.takeHit()
     enemy.isAttacking = false
-    gsap.to('#playerHealth', {
-    width: player.health + '%'
-    })
-
+    document.querySelector('#playerHealth').style.width = player.health + '%'
   }
 
   //  if attack miss
@@ -274,7 +268,6 @@ function animate() {
   }
 
 }
-
 animate()
 
 window.addEventListener('keydown', (event) => {
@@ -290,7 +283,9 @@ window.addEventListener('keydown', (event) => {
         player.lastKey = 'a'
         break
       case 'w':
-        player.velocity.y -= 20
+        if (player.position.y === 330) {
+          player.velocity.y -= 20
+        }
         break
       case 's':
         player.attack()
@@ -309,7 +304,9 @@ window.addEventListener('keydown', (event) => {
         lastKey = 'ArrowLeft'
         break
       case 'ArrowUp':
-        enemy.velocity.y -= 20
+        if (enemy.position.y === 330) {
+          enemy.velocity.y -= 20
+        }
         break
       case 'ArrowDown':
         enemy.attack()
